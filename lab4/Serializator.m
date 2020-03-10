@@ -27,7 +27,7 @@ typedef NS_ENUM(NSUInteger, SerialiseErrorCode){
             if ([key isKindOfClass:[NSString class]] || [key isKindOfClass:[NSNumber class]]) {
                 id value = dict[key];
                 NSError *err;
-                NSString * tempStr = [Serializator processObj:value error:&err];
+                NSString * tempStr = [[NSString stringWithFormat:@"%@: ", key] stringByAppendingFormat:@"%@", [Serializator processObj:value error:&err]];
                 if (err) {
                     * error = err;
                     return nil;
@@ -63,25 +63,25 @@ typedef NS_ENUM(NSUInteger, SerialiseErrorCode){
 
 + (NSString *) processObj:(id)obj error:(NSError **)error {
     if ([obj isKindOfClass:[NSDictionary class]]) {
-        return [NSString stringWithFormat: @"NSDictionary: %@", [Serializator serialize:obj error:error]];
+        return [NSString stringWithFormat: @"%@", [Serializator serialize:obj error:error]];
     }
     if ([obj isKindOfClass:[NSArray class]]) {
-        return [NSString stringWithFormat: @"NSArray: %@", [Serializator processArray:obj error:error]];
+        return [NSString stringWithFormat: @"%@", [Serializator processArray:obj error:error]];
     }
     if ([obj isKindOfClass:[NSSet class]]) {
-        return [NSString stringWithFormat: @"NSSet: %@", [Serializator processArray:[obj allObjects] error:error]];
+        return [NSString stringWithFormat: @"%@", [Serializator processArray:[obj allObjects] error:error]];
     }
     if ([obj isKindOfClass:[NSNumber class]]) {
-        return [NSString stringWithFormat: @"NSNumber: %@", obj];
+        return [NSString stringWithFormat: @"%@", obj];
     }
     if ([obj isKindOfClass:[NSNull class]]) {
-        return @"NSNull: null";
+        return @"null";
     }
     if ([obj isKindOfClass:[NSString class]]) {
-        return [NSString stringWithFormat:@"NSString: %@", obj];
+        return [NSString stringWithFormat:@"%@", obj];
     }
     if ([obj isKindOfClass:[NSValue class]] && ![obj isKindOfClass:[NSNumber class]]) {
-        return [NSString stringWithFormat:@"CGRect: %@", NSStringFromCGRect([(NSValue*)obj CGRectValue])];
+        return [NSString stringWithFormat:@"%@", NSStringFromCGRect([(NSValue*)obj CGRectValue])];
     }
     
     NSDictionary *userInfo = @{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Incorrect type of value (%@)", [obj class]]};
